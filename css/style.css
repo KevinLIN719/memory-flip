@@ -1,6 +1,7 @@
 /* ============================================================
    记忆翻牌 —— 样式表
-   第 1 天：只做"整体框架 + 配色"，牌的样子第 2 天再写
+   第 1 天：整体框架 + 配色
+   第 2 天：4×4 网格 + 卡牌静态外观（翻转动画留到第 3 天）
    ============================================================ */
 
 /* ---------- 1. 变量区：把颜色集中管理 ----------
@@ -13,6 +14,7 @@
   --color-muted: #94a3b8;     /* 次要文字（灰一点） */
   --color-accent: #38bdf8;    /* 强调色（按钮用） */
   --radius: 12px;             /* 统一圆角 */
+  --color-card-back: #334155; /* 第 2 天新增：卡背的底色 */
 }
 
 /* ---------- 2. 全局重置 ----------
@@ -88,13 +90,66 @@ body {
 }
 
 /* ---------- 6. 棋盘区（第 2 天重点写这里） ----------
-   现在里面没有子元素，所以你看不到东西。
-   先给它一个最小高度，方便你确认"这块区域确实存在"。 */
+   display: grid 把容器切成"格子阵"。
+   grid-template-columns: repeat(4, 1fr) 的意思是：
+   排 4 列，每列平分剩下的宽度（1fr = 1 份）。
+   子元素会按顺序自动往格子里填，填满一行就换下一行。
+   所以我们往里面塞 16 张牌，它就自动变成整齐的 4×4。 */
 .board {
-  min-height: 320px;
   display: grid;
-  gap: 10px;
-  /* grid-template-columns 第 2 天会加上，那时才会裂成 4 列 */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;                 /* 格子之间的缝隙 */
+}
+
+/* ---------- 6.1 卡牌本体 ----------
+   aspect-ratio: 1 是说"宽高比 1:1"，也就是正方形。
+   好处：不管屏幕多宽，它会自己算出高度，不用写死像素值。 */
+.card {
+  aspect-ratio: 1;
+  border: none;
+  background: none;          /* 卡牌是按钮，浏览器默认有底色，先清掉 */
+  padding: 0;
+  cursor: pointer;
+  /* 下面这行让"翻到背面"的第 3 天动画有 3D 效果，今天先埋着 */
+  perspective: 800px;
+}
+
+/* ---------- 6.2 卡牌里层的容器 ----------
+   以后做翻转动画时，我们会给它加 rotateY(180deg)，
+   里面的两个面就一起转起来。所以现在先把结构搭好。 */
+.card__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+}
+
+/* ---------- 6.3 卡牌的两个面 ----------
+   两个面用绝对定位叠在同一位置，正面朝前、背面被盖住。
+   这就是"一张牌的正面和反面"的经典做法。 */
+.card__face {
+  position: absolute;
+  inset: 0;                  /* inset: 0 = 上下左右都贴边，等于铺满父元素 */
+  display: flex;             /* 下面三行：让里面的字符水平垂直居中 */
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  font-size: 30px;
+  user-select: none;         /* 防止双击时不小心选中文字 */
+}
+
+/* 背面：现在能看到的那面，用渐变做点纹理 */
+.card__face--back {
+  background: linear-gradient(145deg, var(--color-card-back), #1e293b);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+/* 正面：显示符号的那面，今天先"藏起来"（透明度 0） */
+.card__face--front {
+  background: #f1f5f9;
+  color: #0f172a;
+  opacity: 0;
+  transition: opacity 0.2s ease;   /* 第 3 天翻牌时会用到 */
 }
 
 /* ---------- 7. 按钮 ---------- */
