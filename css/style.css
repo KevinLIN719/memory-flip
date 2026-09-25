@@ -89,68 +89,50 @@ body {
   font-variant-numeric: tabular-nums;  /* 数字等宽，秒数跳动时不会左右抖 */
 }
 
-/* ---------- 6. 棋盘区（第 2 天重点写这里） ----------
-   display: grid 把容器切成"格子阵"。
-   grid-template-columns: repeat(4, 1fr) 的意思是：
-   排 4 列，每列平分剩下的宽度（1fr = 1 份）。
-   子元素会按顺序自动往格子里填，填满一行就换下一行。
-   所以我们往里面塞 16 张牌，它就自动变成整齐的 4×4。 */
+/* ---------- 6. 棋盘区（第 2 天：你自己写） ----------
+   目标：让 #board 变成一个"格子阵"，16 个元素自动排成 4×4。
+   要用到的属性：
+     display: grid                        开启网格布局
+     grid-template-columns: repeat(4, 1fr) 排 4 列，每列等宽（1fr = 1 份）
+     gap                                   格子之间的缝隙
+   另外卡牌要正方形，查一下 aspect-ratio 属性怎么用。
+   👉 TODO: 把下面这段补完
+   ============================================================ */
 .board {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;                 /* 格子之间的缝隙 */
+  /* TODO: 让它变成 4 列网格 */
 }
 
-/* ---------- 6.1 卡牌本体 ----------
-   aspect-ratio: 1 是说"宽高比 1:1"，也就是正方形。
-   好处：不管屏幕多宽，它会自己算出高度，不用写死像素值。 */
-.card {
-  aspect-ratio: 1;
-  border: none;
-  background: none;          /* 卡牌是按钮，浏览器默认有底色，先清掉 */
-  padding: 0;
-  cursor: pointer;
-  /* 下面这行让"翻到背面"的第 3 天动画有 3D 效果，今天先埋着 */
-  perspective: 800px;
-}
+/* ---------- 6.1 卡牌本体（.card） ----------
+   .card 在 JS 里会被建成 <button> 元素，所以有两件事要处理：
+     1. 按钮浏览器自带底色和边框，要清掉（background / border / padding）
+     2. 让它变成正方形 —— 用 aspect-ratio: 1（宽高比 1:1，高度自动算，不用写死像素）
+   顺手也可以加 cursor: pointer 让鼠标变小手。
+   👉 TODO: 自己写
+   ============================================================ */
 
-/* ---------- 6.2 卡牌里层的容器 ----------
-   以后做翻转动画时，我们会给它加 rotateY(180deg)，
-   里面的两个面就一起转起来。所以现在先把结构搭好。 */
-.card__inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius);
-}
+/* ---------- 6.2 卡牌里层容器（.card__inner） ----------
+   这一层现在只是个"盒子"，看起来可以什么都不写。
+   但第 3 天做翻转动画时要转它，所以先给它：
+     position: relative;  width: 100%;  height: 100%;  border-radius: var(--radius);
+   👉 TODO: 自己写（不写的话第 3 天要回来补）
+   ============================================================ */
 
-/* ---------- 6.3 卡牌的两个面 ----------
-   两个面用绝对定位叠在同一位置，正面朝前、背面被盖住。
-   这就是"一张牌的正面和反面"的经典做法。 */
-.card__face {
-  position: absolute;
-  inset: 0;                  /* inset: 0 = 上下左右都贴边，等于铺满父元素 */
-  display: flex;             /* 下面三行：让里面的字符水平垂直居中 */
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius);
-  font-size: 30px;
-  user-select: none;         /* 防止双击时不小心选中文字 */
-}
+/* ---------- 6.3 卡牌的两个面（.card__face） ----------
+   一张牌有正反两面，它们要**叠在同一个位置**，靠"谁盖住谁"来决定露出哪面。
+   实现思路：两个面都 position: absolute; inset: 0;（铺满父元素），
+            背面写在后面（或层级更高）就会盖住正面。
+   共同样式：flex 居中（让符号居中）、圆角、字号、user-select: none（防止双击选中文字）。
+   👉 TODO: 自己写 .card__face 的公共部分
+   ============================================================ */
 
-/* 背面：现在能看到的那面，用渐变做点纹理 */
-.card__face--back {
-  background: linear-gradient(145deg, var(--color-card-back), #1e293b);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-}
+/* 背面 .card__face--back：现在你看到的就是这一面。
+   给它个底色（可以用 linear-gradient 做渐变），加个淡淡的边框更好看。 */
+/* TODO: 自己写 */
 
-/* 正面：显示符号的那面，今天先"藏起来"（透明度 0） */
-.card__face--front {
-  background: #f1f5f9;
-  color: #0f172a;
-  opacity: 0;
-  transition: opacity 0.2s ease;   /* 第 3 天翻牌时会用到 */
-}
+/* 正面 .card__face--front：显示符号的那面。
+   第 2 天要让它"看不见"，所以 opacity: 0（透明但还在，占着位置）。
+   注意不要用 display: none —— 那样第 3 天没法做渐变动画。 */
+/* TODO: 自己写 */
 
 /* ---------- 7. 按钮 ---------- */
 .app__footer {
