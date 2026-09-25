@@ -1,13 +1,13 @@
 # 项目交接文档 · 记忆翻牌（memory-flip）
 
 > **这份文件是给「新会话」看的启动说明。** 新会话的 agent 请先完整读完本文件，再开始干活。
-> 最后更新：第 1 天结束时（本地与远程均为 `eeda8ca`）
+> 最后更新：第 2 天结束时（本地与远程均为 `a159f65`）
 
 ---
 
 ## 0. 给新会话 agent 的一句话开场
 
-> 读 `HANDOFF.md`，用户是编程新手，我们正在做 7 天项目「记忆翻牌」。第 1 天已完成并 push，现在要继续第 2 天。请按文件里的「教学约定」和「第 2 天任务规格」直接开工。
+> 读 `HANDOFF.md`，用户是编程新手，我们正在做 7 天项目「记忆翻牌」。第 1、2 天已完成并 push，现在要继续第 3 天（点击翻牌 + 防连点锁）。请按文件里的「教学约定」和「第 3 天任务规格」直接开工。
 
 ---
 
@@ -46,7 +46,7 @@
 | GitHub 仓库 | https://github.com/KevinLIN719/memory-flip |
 | 部署目标 | GitHub Pages（第 7 天做） |
 | 当前分支 | `main`，已追踪 `origin/main` |
-| 当前提交 | `eeda8ca` — `chore: 初始化项目骨架与 Git 配置` |
+| 当前提交 | `a159f65` — `feat: 渲染 4x4 卡牌网格并实现 Fisher-Yates 洗牌` |
 | 本地与远程 | **完全同步，工作区干净** |
 
 ### 为什么选纯原生、零依赖
@@ -66,12 +66,27 @@ D:\Projects\Self\                 <- 会话工作目录 = 项目根目录
 ├── HANDOFF.md                    ← 本文件
 ├── index.html                    骨架：标题区 + 状态区 + 棋盘区 + 按钮区
 ├── css/
-│   └── style.css                 深蓝配色、卡牌容器、按钮样式（第 1 天版）
+│   └── style.css                 深蓝配色、4×4 Grid、卡牌静态样式（第 2 天版）
 └── js/
-    └── script.js                 目前只做加载自检，游戏逻辑待写
+    └── script.js                 符号表 / 造牌 / 洗牌 / 渲染（第 2 天版）
 ```
 
-**注意**：`.gitattributes` 和 `HANDOFF.md` 是第 1 天之后新增的，**需要提交**（见第 8 节）。
+**注意**：`index.html` 里的 `#board` 仍然是**空的**，16 张牌是 JS 在页面加载时算出来塞进去的。
+调试时如果棋盘空白 → 先看控制台有没有报错，再看 `✅ 已渲染 16 张卡牌` 有没有打印出来。
+
+### 第 2 天建立的关键数据结构（第 3 天直接接着用）
+```js
+// 模块级变量，保存整个牌堆的状态
+let deck = [];
+
+// 每张牌的形状：
+{ id: 0, symbol: '★', matched: false, flipped: false }
+//  id      : 唯一编号（0~15），用来区分两张图案相同的牌
+//  symbol  : 显示的字符
+//  matched : 是否已配对成功（第 4 天用）
+//  flipped : 是否已翻开（第 3 天用）
+```
+`renderBoard()` 每次调用都会**先清空 `#board` 再重画**，所以第 3 天改完数据直接再调一次即可。
 
 ---
 
@@ -118,13 +133,13 @@ D:\Projects\Self\                 <- 会话工作目录 = 项目根目录
 
 ---
 
-## 6. 七天计划（第 1 天已完成）
+## 6. 七天计划（第 1、2 天已完成）
 
 | 天 | 目标 | 当天结束能跑的成果 | 状态 |
 |---|---|---|---|
 | 1 | 建仓库 + 项目骨架 | 页面能打开、控制台自检通过、代码已 push | ✅ |
-| 2 | 16 张卡牌排好版 | 4×4 整齐的卡背网格（CSS Grid） | ⏳ **下一步** |
-| 3 | 点一下能翻牌 | 点击翻开、再点翻回，有防连点的"锁" | 待做 |
+| 2 | 16 张卡牌排好版 | 4×4 整齐的卡背网格（CSS Grid）+ 洗牌生效 | ✅ |
+| 3 | 点一下能翻牌 | 点击翻开、再点翻回，有防连点的"锁" | ⏳ **下一步** |
 | 4 | 配对逻辑 | 两张一样的牌翻对了变色/消失，配错自动翻回 | 待做 |
 | 5 | 计时 + 步数 | 页面显示「步数：12　用时：00:35」 | 待做 |
 | 6 | 通关结算 | 全部配完弹出结算面板 + 翻牌动画打磨 | 待做 |
@@ -132,7 +147,7 @@ D:\Projects\Self\                 <- 会话工作目录 = 项目根目录
 
 ---
 
-## 7. 第 2 天任务规格（**新会话直接照这个开工**）
+## 7. 第 2 天任务规格（✅ 已完成，保留作参考）
 
 ### 目标
 页面渲染出 **4×4 = 16 张卡背**，整齐排布，还没法点。
@@ -169,17 +184,83 @@ D:\Projects\Self\                 <- 会话工作目录 = 项目根目录
 
 ---
 
-## 8. 待办：先把当前改动提交掉
+## 4.5 第 2 天完成情况（✅ 全部完成，提交 `a159f65`）
 
-`HANDOFF.md` 是新增文件，需要提交并推送（**这一步在开始第 2 天代码之前做**）：
+| 步骤 | 内容 | 状态 |
+|---|---|---|
+| 1 | 提交第 1 天遗留的 `HANDOFF.md`（`218f00b`） | ✅ |
+| 2 | `index.html` 副标题改成「第 2 天：16 张牌已就位」 | ✅ |
+| 3 | `.board` 加 `grid-template-columns: repeat(4, 1fr)` + `aspect-ratio: 1` 正方形卡牌 | ✅ |
+| 4 | 新增卡牌样式（`.card` / `__inner` / `__face` / `--front` / `--back`） | ✅ |
+| 5 | `SYMBOLS` 8 个基础字符（★ ● ▲ ■ ◆ ♥ ♠ ♣），**刻意避开 emoji** | ✅ |
+| 6 | `createDeck()` 用 `flatMap` 把 8 个符号变成 16 张牌对象 | ✅ |
+| 7 | `shuffle()` 实现 Fisher-Yates 洗牌 | ✅ |
+| 8 | `renderBoard()` 清空 `#board` 后重建 16 个 `<button class="card">` | ✅ |
+| 9 | 浏览器验收：4×4 网格正常，刷新 3 次牌序都不同，控制台 4 行日志正常 | ✅ |
+| 10 | `node --check js/script.js` 语法自检通过 | ✅ |
+
+### 第 2 天实际实现细节（写第 3 天代码时保持一致的约定）
+- 卡牌 DOM 结构（`cardEl.dataset.id` 存了牌的 id，第 3 天点击时用它反查 `deck`）：
+  ```html
+  <button class="card" data-id="7" aria-label="未翻开的卡牌">
+    <div class="card__inner">
+      <div class="card__face card__face--front">★</div>  <!-- opacity: 0，藏起来的正面 -->
+      <div class="card__face card__face--back"></div>
+    </div>
+  </button>
+  ```
+- **翻牌目前是靠 `.card__face--front` 的 `opacity: 0 → 1` 实现的**（不是 3D 旋转）。
+  `.card` 上已预留 `perspective: 800px`，`.card__face--front` 上有 `transition: opacity 0.2s ease`。
+- 第 3 天推荐做法：给 `.card` 加一个状态 class（例如 `.card--flipped`），CSS 里写
+  `.card--flipped .card__face--front { opacity: 1; }`，JS 只负责增删这个 class。
+- `.card` 是 `<button>`，**天生可点击、可 Tab 聚焦**，不需要额外加 tabindex。
+
+---
+
+## 4.6 第 3 天任务规格（**下一步照这个开工**）
+
+### 目标
+点一下能翻牌，再点一下能翻回去；配对中的牌不能被重复点（防连点"锁"）。
+
+### A. `css/style.css`
+- 新增 `.card--flipped .card__face--front { opacity: 1; }`
+- 新增 `.card--matched` 的样式（第 4 天用，今天可以先埋着）
+- 翻转动画可以今天打磨，也可以留到第 6 天
+
+### B. `js/script.js`
+- 新增状态变量：`firstCard`（本次翻开的第一张）、`lockBoard`（布尔锁）
+- `function onCardClick(event)`：
+  1. 用 `event.target.closest('.card')` 找到被点的牌（**注意：点到的可能是里面的 `.card__face`，不一定是 `.card` 本身**）
+  2. 用 `Number(cardEl.dataset.id)` 去 `deck` 里找到对应的牌对象
+  3. 如果 `lockBoard` 为真、或这张牌已经翻开/已配对 → 直接 `return`
+  4. 否则把该牌对象的 `flipped` 改成 `true`，给元素加上 `.card--flipped`
+  5. 存进 `firstCard`；如果 `firstCard` 已有值 → 进入比对（第 4 天做，今天先 `console.log` 两张牌）
+- 用**事件委托**绑定：只在 `#board` 上绑一次 `click`，不要给 16 张牌各绑一次
+- 「重新开始」按钮今天可以顺手接上：`deck = shuffle(createDeck()); renderBoard();`
+
+### 教学要点（大白话）
+1. **事件委托**：把监听器绑在父元素 `#board` 上，靠事件"冒泡"接住子元素的点击。好处是以后牌重画了也不用重新绑。
+2. **`event.target` vs `event.currentTarget`**：`target` 是真正被点的那个元素（可能是里面的 div），`currentTarget` 是绑监听器的那个（`#board`）。
+3. **`closest()`**：从当前元素往上找最近的符合条件的祖先，正是用来对付"点到里面小元素"的。
+4. **防连点锁（`lockBoard`）**：为什么需要？因为翻两张牌比对的瞬间，用户还能再点第三张，会把状态搞乱。加个布尔锁最省事。
+5. **`dataset`**：HTML 上的 `data-id` 属性，在 JS 里读作 `element.dataset.id`（永远是小写驼峰）。
+
+### 第 3 天验收标准
+- 点任意一张牌 → 正面（符号）显示出来
+- 连点两张 → 控制台打印出这两张牌的符号
+- 点击过程中没有报错，刷新后一切正常
+
+---
+
+## 8. 待办：第 2 天的收尾提交
+
+`HANDOFF.md` 因第 2 天结束而更新，需要提交推送：
 
 ```powershell
 git add .
-git commit -m "docs: 添加项目交接文档与换行符配置"
+git commit -m "docs: 更新交接文档至第 2 天结束"
 git push
 ```
-
-> `.gitattributes` 之前已随第一次 commit 上传，所以这次实际只会新增 `HANDOFF.md`。
 
 ---
 
@@ -189,16 +270,27 @@ git push
 |---|---|
 | 操作系统 | Windows |
 | 会话工作目录 | `D:\Projects\Self`（**已确认可用，终端/搜索/文件读写全部正常**） |
-| Git | 2.53.0.windows.1 |
+| Git | 2.53.0.windows.1，**装在 `D:\Git`（不是默认的 `C:\Program Files\Git`）** |
+| Git 凭据助手 | `credential.helper=manager`，GCM 实际在 `D:\Git\mingw64\bin\git-credential-manager.exe` |
 | Node | v24.21.0 |
 | VS Code | 1.138.0 |
 | 打开项目的方式 | 直接双击 `index.html`（无需本地服务器） |
 | 调试方式 | 浏览器 `F12` → Console 看日志和报错 |
 
+### ⚠️ agent 沙箱没有外网权限（第 2 天发现）
+- agent 的 `pwsh` 里跑 `git push` / `git fetch` **一定失败**，报错长这样：
+  `fatal: unable to access '...': schannel: AcquireCredentialsHandle failed: SEC_E_NO_CREDENTIALS (0x8009030e)`
+- **这不是凭据问题，是沙箱断网**：`web_fetch` 能访问 GitHub（说明仓库/网络本身正常），但 `pwsh` 连
+  `msftconnecttest.com` 都连不上。
+- **处理方式**：agent 只负责 `git add` + `git commit`（本地操作正常），
+  **`git push` 交给用户在 VS Code 的终端里手动跑**（用户第 2 天实测一次通过）。
+- 下次遇到 `schannel` / `unable to access` 报错，别去折腾凭据，直接判定为网络层问题。
+
 ### 已知的历史坑（已解决，仅供理解背景）
 - 用户一开始把项目放在 `D:\Projects\CityU 26-27semA\Self`，后来整体挪到 `D:\Projects\Self`
 - 会话的 cwd 在创建时锁定，改不了。最终通过**在旧路径建 Junction 目录联接**指向新位置解决
 - 如果新会话里又出现 `ENOENT: realpath` 或终端全挂，说明 cwd 又失效了 —— 检查 `D:\Projects\Self` 是否存在
+- 第 1 天 `git add` 报过 CRLF warning → 已加 `.gitattributes` 统一成 LF 解决
 
 ---
 
@@ -233,7 +325,8 @@ git push
 
 | 天 | 日期 | 产出 | 提交 |
 |---|---|---|---|
-| 1 | — | 仓库 + 骨架 + Git 流程走通 | `eeda8ca` |
-| 2 | 待开始 | 4×4 卡牌网格 | — |
+| 1 | 2026-09-25 | 仓库 + 骨架 + Git 流程走通 | `eeda8ca` |
+| 2 | 2026-09-25 | 4×4 卡牌网格 + Fisher-Yates 洗牌 | `a159f65` |
+| 3 | 待开始 | 点击翻牌 + 防连点锁 | — |
 
-**下一步动作：提交本文件 → 开始第 2 天。**
+**下一步动作：提交本文件 → 开始第 3 天。**
