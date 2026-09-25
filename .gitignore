@@ -1,0 +1,12 @@
+# 依赖包，太大了不需要上传（文件太大 GitHub 也会拒收）
+node_modules/
+
+# 系统自动生成的垃圾文件
+.DS_Store
+Thumbs.db
+
+# VS Code 的个人配置，只对你自己有意义
+.vscode/
+
+# 日志
+*.log

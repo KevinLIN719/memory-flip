@@ -1,0 +1,127 @@
+/* ============================================================
+   记忆翻牌 —— 样式表
+   第 1 天：只做"整体框架 + 配色"，牌的样子第 2 天再写
+   ============================================================ */
+
+/* ---------- 1. 变量区：把颜色集中管理 ----------
+   :root 表示整个页面，这里定义的 --xxx 叫 CSS 变量。
+   好处：想换配色只改这一处，全站跟着变。 */
+:root {
+  --color-bg: #0f172a;        /* 页面深色背景 */
+  --color-surface: #1e293b;   /* 卡片/面板背景 */
+  --color-text: #e2e8f0;      /* 主要文字 */
+  --color-muted: #94a3b8;     /* 次要文字（灰一点） */
+  --color-accent: #38bdf8;    /* 强调色（按钮用） */
+  --radius: 12px;             /* 统一圆角 */
+}
+
+/* ---------- 2. 全局重置 ----------
+   * 表示"所有元素"。box-sizing: border-box 让 width 包含内边距和边框，
+   这样算尺寸时脑子不会炸，是几乎所有现代项目的标配。 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 页面主体：铺满屏幕 + 居中 */
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--color-bg) 70%);
+  color: var(--color-text);
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  padding: 24px 16px;
+}
+
+/* ---------- 3. 主容器 ---------- */
+.app {
+  width: 100%;
+  max-width: 480px;          /* 手机宽度，中间不留太宽 */
+  display: flex;
+  flex-direction: column;    /* 里面元素从上到下竖着排 */
+  gap: 20px;                 /* 每个区块之间的间距 */
+}
+
+/* ---------- 4. 标题区 ---------- */
+.app__header {
+  text-align: center;
+}
+
+.app__title {
+  font-size: 28px;
+  letter-spacing: 4px;       /* 中文标题拉开字距会好看很多 */
+}
+
+.app__subtitle {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+/* ---------- 5. 状态区（步数 / 用时） ---------- */
+.hud {
+  display: flex;
+  justify-content: space-around;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+
+.hud__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hud__label {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.hud__value {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;  /* 数字等宽，秒数跳动时不会左右抖 */
+}
+
+/* ---------- 6. 棋盘区（第 2 天重点写这里） ----------
+   现在里面没有子元素，所以你看不到东西。
+   先给它一个最小高度，方便你确认"这块区域确实存在"。 */
+.board {
+  min-height: 320px;
+  display: grid;
+  gap: 10px;
+  /* grid-template-columns 第 2 天会加上，那时才会裂成 4 列 */
+}
+
+/* ---------- 7. 按钮 ---------- */
+.app__footer {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  padding: 10px 28px;
+  font-size: 15px;
+  font-family: inherit;      /* 按钮默认不继承字体，必须手动写上 */
+  color: #06202e;
+  background: var(--color-accent);
+  border: none;
+  border-radius: 999px;      /* 超大圆角 = 胶囊按钮 */
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+/* 鼠标悬停时亮一点 + 微微放大 */
+.btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* 按下时缩回去，有"真的按到了"的手感 */
+.btn:active {
+  transform: translateY(0) scale(0.97);
+}

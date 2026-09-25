@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- 上面这行告诉浏览器：我是 HTML5 文件，请用标准模式解析我 -->
+<html lang="zh-CN">
+<head>
+  <!-- 这行是"我不告诉你你就乱缩放"的手机适配开关，必写 -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>记忆翻牌 | Memory Flip</title>
+  <!-- 把 CSS 引进来。路径是相对本文件的，所以是 css/style.css -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 整页的容器，后面所有东西都塞这里面 -->
+  <main class="app">
+
+    <!-- 1. 标题区 -->
+    <header class="app__header">
+      <h1 class="app__title">记忆翻牌</h1>
+      <p class="app__subtitle">第 1 天：骨架已就位</p>
+    </header>
+
+    <!-- 2. 状态区：步数和计时，第 5 天才会真的动起来 -->
+    <section class="hud" id="hud">
+      <div class="hud__item">
+        <span class="hud__label">步数</span>
+        <strong class="hud__value" id="move-count">0</strong>
+      </div>
+      <div class="hud__item">
+        <span class="hud__label">用时</span>
+        <strong class="hud__value" id="timer">00:00</strong>
+      </div>
+    </section>
+
+    <!-- 3. 棋盘区：第 2 天会由 JS 往这里塞 16 张牌 -->
+    <!--    现在它是空的，所以你在浏览器里看不到任何东西，这是正常的！ -->
+    <section class="board" id="board"></section>
+
+    <!-- 4. 按钮区 -->
+    <footer class="app__footer">
+      <button class="btn" id="restart-btn" type="button">重新开始</button>
+    </footer>
+
+  </main>
+
+  <!-- 把 JS 引进来。放在 body 最后，保证 JS 运行时上面的元素都已经存在了 -->
+  <script src="js/script.js"></script>
+</body>
+</html>

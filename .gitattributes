@@ -1,0 +1,35 @@
+# .gitattributes —— 告诉 Git 怎么处理各种文件
+# 这个文件的作用：把"换行符规则"写进项目本身，
+# 这样不管谁在哪台电脑上克隆，行为都一致。
+
+# ---------- 1. 文本文件的换行符统一规则 ----------
+# text=auto  : Git 自己判断是不是文本文件
+# eol=lf     : 检出到你硬盘上时，也用 LF（不用 Windows 的 CRLF）
+#
+# 为什么选 lf 而不是 crlf？
+# 因为你的项目是网页，最终要在浏览器/服务器上跑，
+# 而服务器（Linux）只认 LF。统一成 LF 最省心。
+* text=auto eol=lf
+
+# ---------- 2. 明确标记这些是文本文件 ----------
+*.html  text
+*.css   text
+*.js    text
+*.json  text
+*.md    text
+*.txt   text
+*.yml   text
+
+# ---------- 3. 明确标记这些是二进制文件 ----------
+# 二进制文件绝不能被 Git 改换行符，否则文件会直接损坏。
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.mp3   binary
+*.mp4   binary
